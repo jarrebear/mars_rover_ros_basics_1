@@ -17,7 +17,7 @@ find_package(geometry_msgs REQUIRED)
 add_executable(subscriber_obstacle_detector_executable src/subscriber_obstacle_detector.cpp)
 
 # Add dependencies
-ament_target_dependencies(subscriber_obstacle_detector_executable rclcpp)
+ament_target_dependencies(subscriber_obstacle_detector_executable rclcpp sensor_msgs)
 
 # Install executables
 install(TARGETS
