@@ -15,13 +15,16 @@ find_package(geometry_msgs REQUIRED)
 
 # Create executable
 add_executable(subscriber_obstacle_detector_executable src/subscriber_obstacle_detector.cpp)
+add_executable(publish_mars_rover_move_executable src/publish_mars_rover_move.cpp)
 
 # Add dependencies
 ament_target_dependencies(subscriber_obstacle_detector_executable rclcpp sensor_msgs)
+ament_target_dependencies(publish_mars_rover_move_executable rclcpp geometry_msgs)
 
 # Install executables
 install(TARGETS
   subscriber_obstacle_detector_executable
+  publish_mars_rover_move_executable
   DESTINATION lib/${PROJECT_NAME})
 
 # Install launch files
