@@ -22,6 +22,7 @@ include_directories(include)
 add_executable(subscriber_obstacle_detector_executable src/subscriber_obstacle_detector.cpp)
 add_executable(publish_mars_rover_move_executable src/publish_mars_rover_move.cpp)
 add_executable(image_plant_detector_executable src/plant_detector_node.cpp)
+add_executable(autonomous_exploration_executable src/autonomous_exploration.cpp)
 
 # Add dependencies
 ament_target_dependencies(subscriber_obstacle_detector_executable rclcpp sensor_msgs)
@@ -33,12 +34,17 @@ ament_target_dependencies(image_plant_detector_executable
   cv_bridge
   OpenCV
 )
-
+ament_target_dependencies(autonomous_exploration_executable
+  rclcpp
+  sensor_msgs
+  geometry_msgs
+)
 # Install executables
 install(TARGETS
   subscriber_obstacle_detector_executable
   publish_mars_rover_move_executable
   image_plant_detector_executable
+  autonomous_exploration_executable
   DESTINATION lib/${PROJECT_NAME})
 
 # Build plant detector library
