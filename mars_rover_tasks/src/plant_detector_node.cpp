@@ -1,5 +1,7 @@
 #include "mars_rover_tasks/plant_detector.hpp"
+#include <custom_interfaces/msg/rover_events.hpp>
 #include <cv_bridge/cv_bridge.h>
+#include <nav_msgs/msg/odometry.hpp>
 #include <opencv2/opencv.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <sensor_msgs/msg/image.hpp>
@@ -19,9 +21,15 @@ public:
         std::bind(&PlantDetectorNode::image_callback, this,
                   std::placeholders::_1));
 
-    // Initialize the Publisher for plant detection results
-    publisher_ =
-        this->create_publisher<std_msgs::msg::String>("/plant_detector", 10);
+    // Initialize the Publisher for rover events
+    publisher_ = this->create_publisher<custom_interfaces::msg::RoverEvents>(
+        "/mars_rover_events", 10);
+
+    // Subscribe to the odometry topic
+    odom_subscription_ = this->create_subscription<nav_msgs::msg::Odometry>(
+        "/odom", 10,
+        std::bind(&PlantDetectorNode::odom_callback, this,
+                  std::placeholders::_1));
   }
 
 private:
@@ -42,27 +50,43 @@ private:
     // Use the PlantDetector to make a prediction
     float prediction = plant_detector_->predict(rgb_image);
 
-    // Determine the results message based on the prediction
-    std::string result;
-    if (prediction > 0.5) {
-      result = "Plant detected with confidence: " + std::to_string(prediction);
-      RCLCPP_WARN(this->get_logger(), "%s", result.c_str());
-    } else {
-      result =
-          "No plant detected. Confidence: " + std::to_string(1.0 - prediction);
-      RCLCPP_INFO(this->get_logger(), "%s", result.c_str());
-    }
+    // Create a RoverEvents message
+    auto rover_event = custom_interfaces::msg::RoverEvents();
 
-    // Publish the result as a String message
-    auto msg_out = std_msgs::msg::String();
-    msg_out.data = result;
-    publisher_->publish(msg_out);
+    // Determine the result message based on the prediction
+    if (prediction > 0.5) {
+      rover_event.info.data =
+          "Plant detected with confidence: " + std::to_string(prediction);
+      RCLCPP_WARN(this->get_logger(), "%s", rover_event.info.data.c_str());
+      RCLCPP_WARN(this->get_logger(), "Publishing mars rover event...");
+
+      // If the odometry data is available, include the rover's location
+      if (current_odom_) {
+        rover_event.rover_location =
+            current_odom_->pose.pose; // Copy the pose data from the odometry
+      }
+
+      // Publish the RoverEvents message
+      publisher_->publish(rover_event);
+    } else {
+      rover_event.info.data =
+          "No plant detected. Confidence: " + std::to_string(1.0 - prediction);
+      RCLCPP_INFO(this->get_logger(), "%s", rover_event.info.data.c_str());
+    }
+  }
+
+private:
+  void odom_callback(const nav_msgs::msg::Odometry::SharedPtr msg) {
+    // Store the current odometry data
+    current_odom_ = msg;
   }
 
 private:
   rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr subscription_;
-  rclcpp::Publisher<std_msgs::msg::String>::SharedPtr publisher_;
+  rclcpp::Publisher<custom_interfaces::msg::RoverEvents>::SharedPtr publisher_;
+  rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr odom_subscription_;
   std::unique_ptr<PlantDetector> plant_detector_;
+  nav_msgs::msg::Odometry::SharedPtr current_odom_;
 };
 
 int main(int argc, char **argv) {

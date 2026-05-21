@@ -16,6 +16,7 @@ find_package(cv_bridge REQUIRED)
 find_package(OpenCV REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(tf2_geometry_msgs REQUIRED)
+find_package(custom_interfaces REQUIRED) 
 
 # Include directories
 include_directories(include)
@@ -35,6 +36,8 @@ ament_target_dependencies(image_plant_detector_executable
   std_msgs
   cv_bridge
   OpenCV
+  custom_interfaces
+  nav_msgs
 )
 ament_target_dependencies(autonomous_exploration_executable
   rclcpp
