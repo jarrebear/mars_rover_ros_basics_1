@@ -37,7 +37,7 @@ add_executable(callback_spinonce_function src/callback_spinonce_function.cpp)
 add_executable(plant_detector src/plant_detector.cpp)
 # add_executable(plant_detector_basic src/plant_detector.cpp)
 add_executable(plant_detector_multithreading src/plant_detector_multithreading.cpp)
-# add_executable(plant_detector_multithreading_callbackgroups src/plant_detector_multithreading_callbackgroups.cpp)
+add_executable(plant_detector_multithreading_callbackgroups src/plant_detector_multithreading_callbackgroups.cpp)
 # add_executable(green_detector_node src/green_detector_node.cpp)
 # add_executable(green_test src/green_test.cpp)
 
@@ -73,14 +73,14 @@ ament_target_dependencies(plant_detector_multithreading
   std_srvs
 )
 
-# ament_target_dependencies(plant_detector_multithreading_callbackgroups
-#   rclcpp
-#   std_msgs
-#   sensor_msgs
-#   geometry_msgs
-#   cv_bridge
-#   OpenCV
-# )
+ament_target_dependencies(plant_detector_multithreading_callbackgroups
+  rclcpp
+  std_srvs
+  sensor_msgs
+  geometry_msgs
+  cv_bridge
+  OpenCV
+)
 
 # ament_target_dependencies(green_detector_node
 #   rclcpp
@@ -103,7 +103,7 @@ install(TARGETS
   plant_detector
 #   plant_detector_basic
   plant_detector_multithreading
-#   plant_detector_multithreading_callbackgroups
+  plant_detector_multithreading_callbackgroups
 #   green_detector_node
 #   green_test
   DESTINATION lib/${PROJECT_NAME}
