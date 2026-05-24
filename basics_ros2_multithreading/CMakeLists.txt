@@ -8,11 +8,15 @@ endif()
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(std_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(std_srvs REQUIRED)
 find_package(cv_bridge REQUIRED)
 find_package(OpenCV REQUIRED)
+
+# Include directories
+include_directories(include)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -31,6 +35,11 @@ add_executable(function src/function.cpp)
 add_executable(callback_function src/callback_function.cpp)
 add_executable(callback_spinonce_function src/callback_spinonce_function.cpp)
 add_executable(plant_detector src/plant_detector.cpp)
+# add_executable(plant_detector_basic src/plant_detector.cpp)
+add_executable(plant_detector_multithreading src/plant_detector_multithreading.cpp)
+# add_executable(plant_detector_multithreading_callbackgroups src/plant_detector_multithreading_callbackgroups.cpp)
+# add_executable(green_detector_node src/green_detector_node.cpp)
+# add_executable(green_test src/green_test.cpp)
 
 # Add dependencies
 ament_target_dependencies(function rclcpp)
@@ -45,12 +54,58 @@ ament_target_dependencies(plant_detector
  OpenCV
  )
 
+# ament_target_dependencies(plant_detector_basic
+#   rclcpp
+#   std_msgs
+#   sensor_msgs
+#   geometry_msgs
+#   cv_bridge
+#   OpenCV
+# )
+
+ament_target_dependencies(plant_detector_multithreading
+  rclcpp
+  std_msgs
+  sensor_msgs
+  geometry_msgs
+  cv_bridge
+  OpenCV
+  std_srvs
+)
+
+# ament_target_dependencies(plant_detector_multithreading_callbackgroups
+#   rclcpp
+#   std_msgs
+#   sensor_msgs
+#   geometry_msgs
+#   cv_bridge
+#   OpenCV
+# )
+
+# ament_target_dependencies(green_detector_node
+#   rclcpp
+#   std_msgs
+#   sensor_msgs
+#   cv_bridge
+#   OpenCV
+# )
+
+# ament_target_dependencies(green_test
+#   rclcpp
+#   std_msgs
+# )
+
 # Install executables
 install(TARGETS
   function
   callback_function
   callback_spinonce_function
   plant_detector
+#   plant_detector_basic
+  plant_detector_multithreading
+#   plant_detector_multithreading_callbackgroups
+#   green_detector_node
+#   green_test
   DESTINATION lib/${PROJECT_NAME}
 )
 
