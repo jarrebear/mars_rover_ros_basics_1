@@ -8,6 +8,11 @@ endif()
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(sensor_msgs REQUIRED)
+find_package(geometry_msgs REQUIRED)
+find_package(std_srvs REQUIRED)
+find_package(cv_bridge REQUIRED)
+find_package(OpenCV REQUIRED)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -24,21 +29,28 @@ endif()
 # Create executables
 add_executable(function src/function.cpp)
 add_executable(callback_function src/callback_function.cpp)
-# add_executable(callback_spinonce_function src/callback_spinonce_function)
-# add_executable(plant_detector src/plant_detector.cpp)
+add_executable(callback_spinonce_function src/callback_spinonce_function.cpp)
+add_executable(plant_detector src/plant_detector.cpp)
 
 # Add dependencies
 ament_target_dependencies(function rclcpp)
 ament_target_dependencies(callback_function rclcpp)
-# ament_target_dependencies(callback_spinonce_function rclcpp)
-# ament_target_dependencies(plant_detector rclcpp)
+ament_target_dependencies(callback_spinonce_function rclcpp)
+ament_target_dependencies(plant_detector
+ rclcpp
+ sensor_msgs
+ geometry_msgs
+ std_srvs
+ cv_bridge
+ OpenCV
+ )
 
 # Install executables
 install(TARGETS
   function
   callback_function
-  #callback_spinonce_function
-  #plant_detector
+  callback_spinonce_function
+  plant_detector
   DESTINATION lib/${PROJECT_NAME}
 )
 
