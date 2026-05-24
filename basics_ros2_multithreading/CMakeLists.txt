@@ -38,8 +38,8 @@ add_executable(plant_detector src/plant_detector.cpp)
 # add_executable(plant_detector_basic src/plant_detector.cpp)
 add_executable(plant_detector_multithreading src/plant_detector_multithreading.cpp)
 add_executable(plant_detector_multithreading_callbackgroups src/plant_detector_multithreading_callbackgroups.cpp)
-# add_executable(green_detector_node src/green_detector_node.cpp)
-# add_executable(green_test src/green_test.cpp)
+add_executable(green_detector_node src/green_detector_node.cpp)
+add_executable(green_test src/green_test.cpp)
 
 # Add dependencies
 ament_target_dependencies(function rclcpp)
@@ -82,18 +82,20 @@ ament_target_dependencies(plant_detector_multithreading_callbackgroups
   OpenCV
 )
 
-# ament_target_dependencies(green_detector_node
-#   rclcpp
-#   std_msgs
-#   sensor_msgs
-#   cv_bridge
-#   OpenCV
-# )
+ament_target_dependencies(green_detector_node
+  rclcpp
+  std_srvs
+  sensor_msgs
+  cv_bridge
+  OpenCV
+)
 
-# ament_target_dependencies(green_test
-#   rclcpp
-#   std_msgs
-# )
+ament_target_dependencies(green_test
+  rclcpp
+  sensor_msgs
+  cv_bridge
+  OpenCV
+)
 
 # Install executables
 install(TARGETS
@@ -104,8 +106,8 @@ install(TARGETS
 #   plant_detector_basic
   plant_detector_multithreading
   plant_detector_multithreading_callbackgroups
-#   green_detector_node
-#   green_test
+  green_detector_node
+  green_test
   DESTINATION lib/${PROJECT_NAME}
 )
 
